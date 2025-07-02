@@ -9,7 +9,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: all 0.3s;
         }
 
         body {
@@ -243,29 +242,27 @@
             border: 1px solid #f5c6cb;
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+        .btn-spinner {
+            aspect-ratio: 1 / 1;
+            height: 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        .btn-primary.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .send-arrow {
+            height: 1.25rem;
         }
 
         @media (max-width: 600px) {
@@ -299,17 +296,16 @@
             </div>
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <div>Processing your request...</div>
-        </div>
+
 
         <div class="input-section">
             <div class="input-container">
                 <input type="text" id="messageInput" placeholder="Type your message here..." autocomplete="off">
             </div>
             <button class="btn btn-voice" id="voiceBtn" title="Voice input">🎤</button>
-            <button class="btn btn-primary" id="sendBtn">Send</button>
+            <button class="btn btn-primary" id="sendBtn">
+                <span id="sendIcon"><img src="{{ url_for('static', filename='up-arrow.svg') }}" alt="Send" class="send-arrow"></span>
+            </button>
         </div>
 
         <div class="upload-section">
@@ -330,13 +326,14 @@
             constructor() {
                 this.messageInput = document.getElementById('messageInput');
                 this.sendBtn = document.getElementById('sendBtn');
+                this.sendIcon = document.getElementById('sendIcon');
                 this.voiceBtn = document.getElementById('voiceBtn');
                 this.chatContainer = document.getElementById('chatContainer');
                 this.fileInput = document.getElementById('fileInput');
                 this.statusMessages = document.getElementById('statusMessages');
-                this.loading = document.getElementById('loading');
                 
                 this.isRecording = false;
+                this.isProcessing = false;
                 this.recognition = null;
                 
                 this.initEventListeners();
@@ -404,11 +401,11 @@
 
             async sendMessage() {
                 const message = this.messageInput.value.trim();
-                if (!message) return;
+                if (!message || this.isProcessing) return;
 
                 this.addMessage(message, 'user');
                 this.messageInput.value = '';
-                this.showLoading(true);
+                this.setButtonLoading(true);
 
                 try {
                     const response = await fetch('/chat', {
@@ -429,7 +426,7 @@
                 } catch (error) {
                     this.showStatus('Network error: ' + error.message, 'error');
                 } finally {
-                    this.showLoading(false);
+                    this.setButtonLoading(false);
                 }
             }
 
@@ -453,7 +450,7 @@
                 const formData = new FormData();
                 formData.append('file', file);
 
-                this.showLoading(true);
+                this.setButtonLoading(true);
 
                 try {
                     const response = await fetch('/upload', {
@@ -473,8 +470,20 @@
                 } catch (error) {
                     this.showStatus('Upload error: ' + error.message, 'error');
                 } finally {
-                    this.showLoading(false);
+                    this.setButtonLoading(false);
                     this.fileInput.value = '';
+                }
+            }
+
+            setButtonLoading(loading) {
+                this.isProcessing = loading;
+                
+                if (loading) {
+                    this.sendBtn.classList.add('loading');
+                    this.sendIcon.innerHTML = '<div class="btn-spinner"></div>';
+                } else {
+                    this.sendBtn.classList.remove('loading');
+                    this.sendIcon.innerHTML = `<img src="{{ url_for('static', filename='up-arrow.svg') }}" alt="Send" class="send-arrow">`;
                 }
             }
 
@@ -495,14 +504,6 @@
 
             clearStatus() {
                 this.statusMessages.innerHTML = '';
-            }
-
-            showLoading(show) {
-                if (show) {
-                    this.loading.classList.add('show');
-                } else {
-                    this.loading.classList.remove('show');
-                }
             }
         }
 

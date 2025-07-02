@@ -9,7 +9,6 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx', 'md'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 # Create upload directory if it doesn't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -24,7 +23,7 @@ def index():
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    sleep(1)
+    sleep(30)
     try:
         data = request.get_json()
         user_message = data.get('message', '').strip()
@@ -46,6 +45,7 @@ def chat():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    sleep(1)
     try:
         if 'file' not in request.files:
             return jsonify({'error': 'No file part'}), 400
