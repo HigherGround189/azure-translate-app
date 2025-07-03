@@ -108,11 +108,26 @@
             background: white;
             color: #333;
             border: 1px solid #e9ecef;
-            list-style-position: inside;
         }
 
-        .message.bot .message-content li{
-            margin-block: 1rem;
+        .message.bot .message-content > :not(:last-child) {
+            margin-bottom: 1rem;
+        }
+
+        .message.bot .message-content :is(ul, ol) {
+            padding-inline-start: 1.5rem;
+        }
+
+        .message.bot .message-content li:not(:last-child) {
+            margin-bottom: 0.4rem;
+        }
+
+        .message.bot .message-content h3 {
+            margin-block: 0.5rem;
+        }
+
+        .message.bot .message-content li > p {
+            margin-block: 0.4rem;
         }
 
         .input-section {
@@ -298,14 +313,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>AI Chatbot</h1>
+            <h1>ExplainAI</h1>
             <p>Ask me anything or upload a document to get started</p>
         </div>
 
         <div class="chat-container" id="chatContainer">
             <div class="message bot">
                 <div class="message-content">
-                    Hello! I'm your AI assistant. How can I help you today?
+                    Hello! I'm ExplainAI, your AI assistant made to explain documents. How can I help you today?
                 </div>
             </div>
         </div>

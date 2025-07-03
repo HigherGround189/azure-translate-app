@@ -5,6 +5,7 @@ from time import sleep
 import re
 from pypdf import PdfReader
 from gpt import GPTManager
+from test import markdown
 
 app = Flask(__name__)
 gpt = GPTManager()
@@ -28,7 +29,6 @@ def index():
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    sleep(1)
     try:
         data = request.get_json()
         user_message = data.get('message', '').strip()
@@ -36,7 +36,7 @@ def chat():
         if not user_message:
             return jsonify({'error': 'No message provided'}), 400
         
-        # gpt_response = "echo" + user_message
+        # gpt_response = markdown
         # Get LLM output
         gpt_response = gpt.query(user_message, document_list)
         print(gpt_response)
@@ -51,7 +51,6 @@ def chat():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    sleep(1)
     try:
         if 'file' not in request.files:
             return jsonify({'error': 'No file part'}), 400
