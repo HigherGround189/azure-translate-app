@@ -11,6 +11,7 @@ dependencies = [
     "flask>=3.1.1",
     "pypdf>=5.7.0",
     "python-dotenv>=1.1.1",
+    "sacremoses>=0.1.1",
     "sentencepiece>=0.2.0",
     "torch==2.7.0",
     "transformers>=4.53.0",
