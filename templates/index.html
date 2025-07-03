@@ -63,7 +63,7 @@
         .chat-container {
             background: #f8f9fa;
             border-radius: 15px;
-            height: 45vh;
+            height: 400px;
             overflow-y: auto;
             padding: 20px;
             margin-bottom: 20px;
@@ -135,17 +135,18 @@
         }
 
         .btn {
-            width: 1%; /* I don't get it, but it works*/
             padding: 15px 25px;
             border: none;
             border-radius: 25px;
+            font-size: 1.15rem;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            width: 74px;
         }
 
         .btn-primary {
@@ -312,6 +313,9 @@
             <label for="fileInput" class="upload-label">
                 📁 Click to upload a document
             </label>
+            <div class="upload-info">
+                Supported formats: TXT, PDF, DOC, DOCX, MD (Max 16MB)
+            </div>
         </div>
 
         <div id="statusMessages"></div>
