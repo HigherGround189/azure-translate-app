@@ -2,8 +2,12 @@ from flask import Flask, render_template, request, jsonify
 import os
 from werkzeug.utils import secure_filename
 from time import sleep
+import re
+from pypdf import PdfReader
+from gpt import GPTManager
 
 app = Flask(__name__)
+gpt = GPTManager()
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'
@@ -12,6 +16,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Create upload directory if it doesn't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+document_list = {}
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -31,12 +36,13 @@ def chat():
         if not user_message:
             return jsonify({'error': 'No message provided'}), 400
         
-        # This is where you would integrate your actual chatbot logic
-        # For now, we'll return a simple echo response
-        bot_response = f"Echo: {user_message}"
-        
+        # gpt_response = "echo" + user_message
+        # Get LLM output
+        gpt_response = gpt.query(user_message, document_list)
+        print(gpt_response)
+
         return jsonify({
-            'response': bot_response,
+            'response': gpt_response,
             'status': 'success'
         })
     
@@ -60,8 +66,12 @@ def upload_file():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
             
-            # Here you would process the uploaded document
-            # For now, we'll just confirm the upload
+            # Read pdf and add it to document list
+            reader = PdfReader(file_path)
+            raw_pdf = " ".join([page.extract_text() for page in reader.pages])
+            cleaned_pdf = re.sub(r'\n', ' ', raw_pdf)
+            document_list[filename] = cleaned_pdf
+
             return jsonify({
                 'message': f'File "{filename}" uploaded successfully',
                 'filename': filename,
