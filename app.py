@@ -32,13 +32,16 @@ def chat():
     try:
         data = request.get_json()
         user_message = data.get('message', '').strip()
+        chat_history = data.get('chat_history', [])
         
         if not user_message:
             return jsonify({'error': 'No message provided'}), 400
         
+        print(chat_history)
+
         # gpt_response = markdown
         # Get LLM output
-        gpt_response = gpt.query(user_message, document_list)
+        gpt_response = gpt.query(user_message, document_list, chat_history)
         print(gpt_response)
 
         return jsonify({
