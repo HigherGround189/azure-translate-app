@@ -75,7 +75,7 @@ def upload_file():
             document_list[filename] = cleaned_pdf
 
             return jsonify({
-                'message': f'File "{filename}" uploaded successfully',
+                'message': f'File "{filename}" uploaded successfully ✅',
                 'filename': filename,
                 'status': 'success'
             })
