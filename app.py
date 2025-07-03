@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from time import sleep
 import re
 from pypdf import PdfReader
-from gpt import GPTManager
+from utility_classes.gpt_manager import GPTManager
 from test import markdown
 
 app = Flask(__name__)

@@ -4,7 +4,6 @@ from azure.core.credentials import AzureKeyCredential
 from dotenv import load_dotenv
 import os
 
-
 class GPTManager():
     def __init__(self):
         load_dotenv()
