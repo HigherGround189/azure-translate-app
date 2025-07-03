@@ -23,7 +23,7 @@ def index():
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    sleep(30)
+    sleep(1)
     try:
         data = request.get_json()
         user_message = data.get('message', '').strip()
