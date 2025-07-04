@@ -64,6 +64,33 @@
             font-size: 1.1em;
         }
 
+        .language-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .language-toggle .btn {
+            padding: 15px 15px;
+            font-size: 0.9em;
+            border-radius: 25px;
+            background: #e9ecef;
+            color: #666;
+            border: 1px solid #dee2e6;
+        }
+
+        .language-toggle .btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .language-toggle .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
         .chat-container {
             background: #f8f9fa;
             border-radius: 15px;
@@ -216,15 +243,21 @@
             50% { transform: scale(1.05); }
         }
 
-        .upload-section {
+        .bottom-section {
+            display: flex;
+            gap: 10px;
             margin-top: 20px;
-            padding: 20px;
+            align-items: center;
+        }
+
+        .upload-section {
+            padding: 15px;
             background: #f8f9fa;
-            border-radius: 15px;
+            border-radius: 25px;
             border: 3px dashed #dee2e6;
             text-align: center;
             transition: all 0.3s ease;
-            display: block;
+            flex: 1;
             cursor: pointer;
         }
 
@@ -361,12 +394,18 @@
             </button>
         </div>
 
-        <label class="upload-section">
-            <input type="file" id="fileInput" class="upload-input" accept=".txt,.pdf,.doc,.docx,.md">
-            <div for="fileInput" class="upload-label">
-                📁 Click to upload a document
+        <div class="bottom-section">
+            <label class="upload-section">
+                <input type="file" id="fileInput" class="upload-input" accept=".txt,.pdf,.doc,.docx,.md">
+                <div for="fileInput" class="upload-label">
+                    📁 Click to upload a document
+                </div>
+            </label>
+            <div class="language-toggle">
+                <button class="btn active" id="lang-en">English</button>
+                <button class="btn" id="lang-zh">中文</button>
             </div>
-        </label>
+        </div>
     </div>
 
     <div id="toast-container"></div>
@@ -389,6 +428,7 @@
                 
                 this.initEventListeners();
                 this.initSpeechRecognition();
+                this.initLanguageToggle();
             }
 
             initEventListeners() {
@@ -406,7 +446,8 @@
                     this.recognition = new SpeechRecognition();
                     this.recognition.continuous = false;
                     this.recognition.interimResults = false;
-                    this.recognition.lang = 'en-US';
+                    const speechLang = localStorage.getItem('appLanguage') === 'zh' ? 'cmn-Hans-CN' : 'en-GB';
+                    this.recognition.lang = speechLang;
 
                     this.recognition.onstart = () => {
                         this.isRecording = true;
@@ -570,6 +611,40 @@
             clearStatus() {
                 const toastContainer = document.getElementById('toast-container');
                 toastContainer.innerHTML = '';
+            }
+
+            initLanguageToggle() {
+                this.langEnBtn = document.getElementById('lang-en');
+                this.langZhBtn = document.getElementById('lang-zh');
+
+                this.langEnBtn.addEventListener('click', () => this.setLanguage('en'));
+                this.langZhBtn.addEventListener('click', () => this.setLanguage('zh'));
+
+                // Set initial language based on local storage or default to English
+                const savedLang = localStorage.getItem('appLanguage') || 'en';
+                this.setLanguage(savedLang);
+            }
+
+            setLanguage(lang) {
+                // Update active class
+                if (lang === 'en') {
+                    this.langEnBtn.classList.add('active');
+                    this.langZhBtn.classList.remove('active');
+                } else if (lang === 'zh') {
+                    this.langZhBtn.classList.add('active');
+                    this.langEnBtn.classList.remove('active');
+                }
+                // Save preference
+                localStorage.setItem('appLanguage', lang);
+
+                // Update speech recognition language
+                if (this.recognition) {
+                    this.recognition.lang = lang === 'zh' ? 'cmn-Hans-CN' : 'en-GB';
+                }
+                
+                // Here you would typically update the UI text based on the selected language
+                // For this task, we are only creating the UI element.
+                console.log(`Language set to: ${lang}`);
             }
         }
 
