@@ -6,7 +6,6 @@ import re
 from pypdf import PdfReader
 from utility_classes.gpt_manager import GPTManager
 from utility_classes.utility_functions import detect_language, translate
-from test import markdown
 
 app = Flask(__name__)
 gpt = GPTManager()
