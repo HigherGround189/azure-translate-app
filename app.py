@@ -9,7 +9,7 @@ from utility_classes.utility_functions import detect_language, translate
 app = Flask(__name__)
 gpt = GPTManager()
 
-# Configuration
+# Config
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx', 'md'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
