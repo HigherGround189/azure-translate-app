@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import os
 from werkzeug.utils import secure_filename
-from time import sleep
 import re
 from pypdf import PdfReader
 from utility_classes.gpt_manager import GPTManager

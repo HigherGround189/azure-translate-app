@@ -13,6 +13,7 @@ class GPTManager():
         )
 
         self.system_message = """
+        You are ExplainAI, a helpful AI assistant that can explain and summarise documents.
         You will be given a document, along with a question related to the paper.
         Both will be enclosed in xml tags. Here is an example:
 
