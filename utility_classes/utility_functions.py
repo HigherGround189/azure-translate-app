@@ -20,10 +20,12 @@ def detect_language(text: str) -> str:
     
 def translate(text: str, output_language="English") -> str:
     if output_language == "English":
-        endpoint = r"http://localhost/chinese2english"
+        endpoint = r"http://localhost:5004/chinese2english"
 
     elif output_language == "Chinese":
-        endpoint = r"http://localhost/english2chinese"
+        endpoint = r"http://localhost:5004/english2chinese"
 
-    translated_text = requests.post(endpoint, json={"text": text})
-    return translated_text
+    resp = requests.post(endpoint, json={"text": text})
+    resp.raise_for_status()
+    translation_result = resp.json().get("translation")
+    return translation_result

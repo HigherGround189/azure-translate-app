@@ -500,12 +500,16 @@
                 this.setButtonLoading(true);
 
                 try {
+                    const selectedLanguage = localStorage.getItem('appLanguage') || 'en';
                     const response = await fetch('/chat', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ message: message })
+                        body: JSON.stringify({ 
+                            message: message,
+                            language: selectedLanguage
+                        })
                     });
 
                     const data = await response.json();

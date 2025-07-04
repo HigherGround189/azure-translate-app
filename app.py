@@ -5,6 +5,7 @@ from time import sleep
 import re
 from pypdf import PdfReader
 from utility_classes.gpt_manager import GPTManager
+from utility_classes.utility_functions import detect_language, translate
 from test import markdown
 
 app = Flask(__name__)
@@ -33,16 +34,28 @@ def chat():
         data = request.get_json()
         user_message = data.get('message', '').strip()
         chat_history = data.get('chat_history', [])
+        selected_language_code = data.get('language', 'en')  # Default to 'en' if not provided
         
         if not user_message:
             return jsonify({'error': 'No message provided'}), 400
         
-        print(chat_history)
+        # Map language codes to full names
+        language_map = {'en': 'English', 'zh': 'Chinese'}
+        selected_language_full = language_map.get(selected_language_code, 'English')
 
-        # gpt_response = markdown
         # Get LLM output
         gpt_response = gpt.query(user_message, document_list, chat_history)
-        print(gpt_response)
+        print(f"GPT Response: {gpt_response}")
+
+        # Detect language of GPT response
+        detected_lang_full = detect_language(gpt_response)
+        print(f"Detected Language: {detected_lang_full}")
+
+        # Translate if necessary
+        if detected_lang_full != selected_language_full:
+            print(f"Translating from {detected_lang_full} to {selected_language_full}")
+            gpt_response = translate(gpt_response, selected_language_full)
+            print(f"Translated Response: {gpt_response}")
 
         return jsonify({
             'response': gpt_response,
