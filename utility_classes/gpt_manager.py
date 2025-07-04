@@ -22,6 +22,7 @@ class GPTManager():
         Additionally, you will be given a chat history, in this JSON format:
         {'user':'What colour is the sky?'}, {'bot': 'It is blue!'}
         
+        Keep in mind that you the user's questions might not be in english. If that is the case, answer in whatever language that their question was in.
         """
 
         # Uses this xml structure
