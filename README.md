@@ -1,6 +1,6 @@
 # Azure Translate App
 
-This is a simple web application that uses Azure's translation service to translate text.
+This is a simple web application that uses Marian and Azure's AI foundry.
 
 ## Prerequisites
 
