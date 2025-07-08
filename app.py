@@ -4,10 +4,13 @@ from werkzeug.utils import secure_filename
 import re
 from pypdf import PdfReader
 from utility_classes.gpt_manager import GPTManager
+from utility_classes.tts_manager import TTSManager
 from utility_classes.utility_functions import detect_language, translate
+import base64
 
 app = Flask(__name__)
 gpt = GPTManager()
+tts_manager = TTSManager()
 
 # Config
 UPLOAD_FOLDER = 'uploads'
@@ -55,8 +58,13 @@ def chat():
             gpt_response = translate(gpt_response, selected_language_full)
             print(f"Translated Response: {gpt_response}")
 
+        # Generate audio
+        audio_data = tts_manager.synthesize_speech(gpt_response)
+        audio_base64 = base64.b64encode(audio_data).decode('utf-8') if audio_data else None
+
         return jsonify({
             'response': gpt_response,
+            'audio': audio_base64,
             'status': 'success'
         })
     
