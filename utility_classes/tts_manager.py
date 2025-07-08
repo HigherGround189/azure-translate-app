@@ -1,15 +1,18 @@
 import azure.cognitiveservices.speech as speechsdk
 import os
+from dotenv import load_dotenv
 
 class TTSManager:
     def __init__(self):
-        self.speech_config = speechsdk.SpeechConfig(subscription=os.environ.get('SPEECH_KEY'), region=os.environ.get('SPEECH_REGION'))
-        # Set the voice name, refer to https://aka.ms/speech/voices/neural for available voices
+        load_dotenv()
+        API_KEY = os.getenv("API_KEY")
+        AZURE_ENDPOINT_REGION = os.getenv("AZURE_ENDPOINT_REGION")
+
+        self.speech_config = speechsdk.SpeechConfig(subscription=API_KEY, region=AZURE_ENDPOINT_REGION)
         self.speech_config.speech_synthesis_voice_name='en-US-AvaMultilingualNeural'
         
     def synthesize_speech(self, text):
         try:
-            # Use an in-memory audio stream
             audio_output = speechsdk.audio.PullAudioOutputStream()
             speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=self.speech_config, audio_config=speechsdk.audio.AudioOutputConfig(stream=audio_output))
             
