@@ -425,6 +425,7 @@
                 this.isRecording = false;
                 this.isProcessing = false;
                 this.recognition = null;
+                this.currentAudio = null;
                 
                 this.initEventListeners();
                 this.initSpeechRecognition();
@@ -519,8 +520,11 @@
                     } else {
                         this.addMessage(data.response, 'bot');
                         if (data.audio) {
-                            const audio = new Audio("data:audio/wav;base64," + data.audio);
-                            audio.play();
+                            if (this.currentAudio) {
+                                this.currentAudio.pause();
+                            }
+                            this.currentAudio = new Audio("data:audio/wav;base64," + data.audio);
+                            this.currentAudio.play();
                         }
                     }
                 } catch (error) {
